@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  export-service:
+    build: ./
+    command: ./dem3
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./pkg/models/postgresql:/var/lib/postgresql
+#      - ./mysql-data:/var/lib/mysql/data
+    environment:
+      - POSTGRES_PASSWORD=mozene
+      - POSTGRES_DB=snip
+    ports:
+      - 5436:5432

@@ -1,0 +1,11 @@
+is_debug: true
+listen:
+  type: port
+  bind_ip: 127.0.0.1
+  port: :4000
+storage:
+  host: db
+  port: 5432
+  database: snip
+  username: postgres
+  password: mozene

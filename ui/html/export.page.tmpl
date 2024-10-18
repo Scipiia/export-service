@@ -1,0 +1,14 @@
+{{template "base" .}}
+
+{{define "title"}}Заказ #{{.ProfData.D2Number}}{{end}}
+
+{{define "main"}}
+    {{with .ProfData}}
+    <div class='snippet'>
+        <div class='metadata'>
+            <strong>Заказ № {{.D2Number}}</strong>
+            <span>{{.D2Manager}}</span>
+        </div>
+    </div>
+    {{end}}
+{{end}}

@@ -1,0 +1,19 @@
+{{template "base" .}}
+
+{{define "title"}}Заметка #{{.ProfData.ID}}{{end}}
+
+{{define "main"}}
+    {{with .ProfData}}
+    <div class='snippet'>
+        <div class='metadata'>
+            <strong>{{.D2Number}}</strong>
+            <span>#{{.D2Manager}}</span>
+        </div>
+        <pre><code>{{.NoteOrder}}</code></pre>
+        <div class='metadata'>
+            <time>Создан: {{.D2City}}</time>
+            <time>Срок: {{.D2Napr}}</time>
+        </div>
+    </div>
+    {{end}}
+{{end}}
