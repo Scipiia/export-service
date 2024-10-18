@@ -221,7 +221,7 @@ func readDir(dir string) ([]string, error) {
 		}
 		fileSlices = append(fileSlices, file.Name())
 	}
-	return fileSlice, nil
+	return fileSlices, nil
 }
 
 func searchPos(str, str1 string) string {
