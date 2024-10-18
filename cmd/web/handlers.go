@@ -208,7 +208,7 @@ func readDir(dir string) ([]string, error) {
 		log.Fatal("Readdir error: ", err)
 	}
 
-	var filePiz []string
+	var fileSlice []string
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -216,12 +216,12 @@ func readDir(dir string) ([]string, error) {
 			if err != nil {
 				return nil, fmt.Errorf("dirwalk %s: %w", filepath.Join(dir, file.Name()), err)
 			}
-			filePiz = append(filePiz, p...)
+			filePiz = append(fileSlice, p...)
 			continue
 		}
-		filePiz = append(filePiz, file.Name())
+		filePiz = append(fileSlice, file.Name())
 	}
-	return filePiz, nil
+	return fileSlice, nil
 }
 
 func searchPos(str, str1 string) string {
