@@ -4,8 +4,8 @@ listen:
   bind_ip: 127.0.0.1
   port: :4000
 storage:
-  host: db
+  host: localhost
   port: 5432
   database: snip
   username: postgres
-  password: mozene
+  password: mozene33

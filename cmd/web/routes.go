@@ -10,7 +10,7 @@ func (app *application) routes() *http.ServeMux {
 	//mux.HandleFunc("/dem/show", app.show)
 	//mux.HandleFunc("/dem/create", app.create)
 
-	mux.HandleFunc("/dem/read", app.ExportFromProfstroi)
+	mux.HandleFunc("/dem/read", app.ExportFromProfstroi1)
 
 	//static
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("ui/static")})

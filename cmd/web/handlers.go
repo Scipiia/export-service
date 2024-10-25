@@ -97,6 +97,86 @@ import (
 //	http.Redirect(w, r, fmt.Sprintf("/dem/show?id=%d", id), http.StatusSeeOther)
 //}
 
+// zapas
+func (app *application) ExportFromProfstroi1(w http.ResponseWriter, r *http.Request) {
+	obrabotka, i, err := app.obrabotka()
+	if err != nil {
+		return
+	}
+
+	err = app.profData.Insertik(obrabotka, i)
+	if err != nil {
+		app.logger.Error("R1", err)
+	}
+}
+
+func (app *application) obrabotka() (*models.ProfData, map[int][]string, error) {
+	dir := "temp"
+	files, err := readDir(dir)
+	if err != nil {
+		app.logger.Error(err)
+	}
+
+	fileNames := ""
+	for _, file := range files {
+		if strings.Contains(file, ".txt") {
+			fileNames = file
+		}
+	}
+
+	data, err := os.OpenFile(filepath.Join(dir, fileNames), os.O_RDONLY, 0644)
+	if err != nil {
+		app.logger.Error(err)
+	}
+
+	defer data.Close()
+
+	decoder := charmap.Windows1251.NewDecoder()
+	reader := decoder.Reader(data)
+	scanner := bufio.NewScanner(reader)
+
+	dataStr := &models.ProfData{}
+	mapDet := make(map[int][]string)
+
+	n := 0
+	for scanner.Scan() {
+		n++
+		a := scanner.Text()
+		dataStr.D2Number += searchPos(a, "Номер_заказа::::")
+		dataStr.D2Profstroi += searchPos(a, "Профстрой::::")
+		dataStr.D2Object += searchPos(a, "Объект::::")
+		dataStr.D2Manager += searchPos(a, "Менеджер::::")
+		dataStr.D2Kontragent += searchPos(a, "Контрагент.Мен::::")
+		dataStr.D2ID += searchPos(a, "Идентификатор_ID::::")
+		dataStr.D2Diler += searchPos(a, "Контрагент::::")
+		dataStr.D2City += searchPos(a, "Город::::")
+		dataStr.D2Napr += searchPos(a, "Направление_источник::::")
+		dataStr.D2SumProjToSk += searchPos(a, "Стоимость_проекта_без_скидок::::")
+		dataStr.D2SumSkidka += searchPos(a, "Скидка_общая::::")
+		dataStr.D2SumProjWithSkidka += searchPos(a, "Стоимость_проекта_со_скидками::::")
+		dataStr.D2SumConstrWithSkidka += searchPos(a, "Стоимость_конструкций_со_скидками::::")
+		dataStr.D2SumRabWithSkidka += searchPos(a, "Стоимость_работ_со_скидками::::")
+		dataStr.D2Status += searchPos(a, "Статус_проекта::::")
+		dataStr.NoteOrder += searchPos(a, "Примечание::::")
+
+		material := searchPos(a, "Материал::::")
+		split := strings.Split(material, ";;;;")
+		for _, s := range split {
+			if s != "" {
+				split2 := strings.Split(s, ";;")
+				for _, s2 := range split2 {
+					mapDet[n] = append(mapDet[n], s2)
+				}
+			}
+		}
+	}
+
+	//fmt.Println(dataStr)
+	//fmt.Println(mapDet)
+
+	return dataStr, mapDet, err
+}
+
 // my logics
 func (app *application) ExportFromProfstroi(w http.ResponseWriter, r *http.Request) {
 
@@ -169,6 +249,8 @@ func (app *application) ExportFromProfstroi(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		app.logger.Error(err)
 	}
+
+	fmt.Println(mapDet[468][1])
 
 	for _, i2 := range mapDet {
 		dataStr.Details.Size = i2[0]
